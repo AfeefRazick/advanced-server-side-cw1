@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     full_name varchar(100) NOT NULL,
     email varchar(255) NOT NULL,
     password_hash varchar(255) NOT NULL,
-    role varchar(50) NOT NULL DEFAULT 'alumni',
+    role varchar(50) NOT NULL DEFAULT 'alumnus',
     is_verified tinyint(1) NOT NULL DEFAULT 0,
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
