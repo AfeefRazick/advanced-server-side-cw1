@@ -24,12 +24,12 @@ class Auth extends RestController
         $confirmPassword = (string) $this->post('confirm_password');
         $role = $this->_inferRoleFromEmail($email);
 
-        $this->form_validation->set_data(array(
+        $this->form_validation->set_data([
             'full_name' => $fullName,
             'email' => $email,
             'password' => $password,
             'confirm_password' => $confirmPassword,
-        ));
+        ]);
 
         $this->form_validation->set_rules('full_name', 'Full Name', 'required|trim');
         $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email');
@@ -39,64 +39,64 @@ class Auth extends RestController
         if ($this->form_validation->run() === false) {
             log_message('debug', 'Signup validation failed: ' . validation_errors(' ', ' '));
 
-            return $this->response(array(
+            return $this->response([
                 'status' => false,
                 'message' => 'Validation failed',
                 'errors' => $this->form_validation->error_array(),
-            ), 400);
+            ], 400);
         }
 
         if ($role === null) {
             log_message('debug', 'Signup rejected for unsupported email domain: ' . $email);
 
-            return $this->response(array(
+            return $this->response([
                 'status' => false,
                 'message' => 'Please use an approved email address',
-            ), 400);
+            ], 400);
         }
 
         $existingUser = $this->User_model->get_by_email($email);
         if ($existingUser) {
             log_message('debug', 'Signup rejected for duplicate email: ' . $email);
 
-            return $this->response(array(
+            return $this->response([
                 'status' => false,
                 'message' => 'Email already registered',
-            ), 409);
+            ], 409);
         }
 
-        $userData = array(
+        $userData = [
             'full_name' => $fullName,
             'email' => $email,
             'password_hash' => password_hash($password, PASSWORD_BCRYPT),
             'role' => $role,
             'is_verified' => 0,
-        );
+        ];
 
         $userId = $this->User_model->create_user($userData);
 
         if ($userId ===    false) {
             log_message('error', 'Signup database insert failed for email: ' . $email);
 
-            return $this->response(array(
+            return $this->response([
                 'status' => false,
                 'message' => 'Signup failed',
-            ), 500);
+            ], 500);
         }
 
         log_message('debug', 'Signup successful for user ID ' . $userId);
 
-        return $this->response(array(
+        return $this->response([
             'status' => true,
             'message' => 'Signup successful',
-            'data' => array(
+            'data' => [
                 'id' => $userId,
                 'full_name' => $fullName,
                 'email' => $email,
                 'role' => $role,
                 'is_verified' => false,
-            ),
-        ), 201);
+            ],
+        ], 201);
     }
 
     private function _inferRoleFromEmail($email)
