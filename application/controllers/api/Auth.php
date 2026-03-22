@@ -2,21 +2,46 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Auth extends CI_Controller
+require APPPATH . '/libraries/RestController.php';
+
+use chriskacerguis\RestServer\RestController;
+
+class Auth extends RestController
 {
-    public function signup()
+    public function __construct()
     {
-        $email           = trim($this->input->post('email'));
-        $password        = $this->input->post('password');
-        $confirmPassword = $this->input->post('confirm_password');
+        parent::__construct();
+    }
+
+    public function signup_post()
+    {
+        $email = trim((string) $this->post('email'));
+        $password = $this->post('password');
+        $confirmPassword = $this->post('confirm_password');
 
         $inferredRole = $this->_inferRoleFromEmail($email);
-        log_message('debug', 'Inferred role: ' . $inferredRole);
+        log_message('debug', 'Inferred role: ' . ($inferredRole ?? 'none'));
+
+        return $this->response(
+            array(
+                'status' => true,
+                'email' => $email,
+                'password_present' => !empty($password),
+                'confirm_password_present' => !empty($confirmPassword),
+                'role' => $inferredRole,
+            ),
+            200
+        );
     }
 
     private function _inferRoleFromEmail($email)
     {
+        if (!$email || strpos($email, '@') === false) {
+            return null;
+        }
+
         $domain = substr(strrchr($email, '@'), 1);
+
         switch ($domain) {
             case 'eastminster.ac.uk':
                 return 'alumnus';
