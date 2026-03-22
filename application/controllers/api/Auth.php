@@ -11,7 +11,7 @@ class Auth extends CI_Controller
         $confirmPassword = $this->input->post('confirm_password');
 
         $inferredRole = $this->_inferRoleFromEmail($email);
-        log_message('debug', 'Inferred role: ' . ($inferredRole ?? 'none'));
+        log_message('debug', 'Inferred role: ' . $inferredRole);
     }
 
     private function _inferRoleFromEmail($email)
