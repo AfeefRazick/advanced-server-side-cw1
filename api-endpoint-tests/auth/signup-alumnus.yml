@@ -1,0 +1,27 @@
+info:
+  name: signup alumnus
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{base_url}}/api/auth/signup"
+  body:
+    type: form-urlencoded
+    data:
+      - name: full_name
+        value: Test Student
+      - name: email
+        value: test@eastminster.ac.uk
+      - name: password
+        value: password123
+      - name: confirm_password
+        value: password123
+  auth:
+    type: none
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
