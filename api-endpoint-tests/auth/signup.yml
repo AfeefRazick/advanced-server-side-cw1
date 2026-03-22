@@ -7,7 +7,7 @@ http:
   method: POST
   url: "{{base_url}}/api/auth/signup"
   body:
-    type: multipart-form
+    type: form-urlencoded
     data:
       - name: email
         value: test@eastminster.ac.uk
